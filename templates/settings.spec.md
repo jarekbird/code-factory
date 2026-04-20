@@ -56,6 +56,11 @@ Generate `.claude/settings.json` with the hook wiring below. Substitute language
           },
           {
             "type": "agent",
+            "prompt": "Invoke the dead-code-check skill — scan changed files for unused functions/classes/modules, unreachable code, stale TODOs, orphaned fixtures...",
+            "timeout": 60
+          },
+          {
+            "type": "agent",
             "prompt": "Meta-check: read engineer skill + settings + factory skills, compare against code structure, flag staleness or useful additions...",
             "timeout": 60
           }

@@ -93,6 +93,9 @@ Project-specific architecture skill. See [templates/engineer.spec.md](templates/
 ### `.claude/skills/dry-check/SKILL.md`
 **Copy as-is** from [templates/dry-check.md](templates/dry-check.md). Replace the hook script path in the skill body with the target language's script extension.
 
+### `.claude/skills/dead-code-check/SKILL.md`
+**Copy as-is** from [templates/dead-code-check.md](templates/dead-code-check.md). The guardrails section at the end lists language-specific false-positive patterns; retain the block matching the target language and remove the rest.
+
 ### `.claude/skills/benchmark/SKILL.md`
 **Copy from** [templates/benchmark.md](templates/benchmark.md). Replace the bigO-specific example block with the language's equivalent benchmarking library (criterion for Rust, hyperfine for CLI, benchmark.js for JS, JMH for Java, go test -bench for Go).
 
