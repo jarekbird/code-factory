@@ -1,0 +1,26 @@
+# AI Check Whitelist
+# Entries here are explicitly accepted — AI checks will not flag them.
+# Format:
+#   <check_name>:
+#     - path: <file path or glob>
+#       function: <function name, optional>
+#       reason: <why this is acceptable>
+
+complexity:
+  # Example:
+  # - path: src/app/engine/matching/walker.py
+  #   function: search_best_chain
+  #   reason: Graph DFS inherently O(branches^depth); guarded by curvature pruning.
+
+srp:
+  # Example:
+  # - path: src/app/services/orchestrator_service.py
+  #   reason: Intentionally coordinates multiple services for pipeline orchestration.
+
+dry:
+  # Example:
+  # - pattern: "src/app/api/*"
+  #   reason: CRUD endpoints have similar shape but serve different resources.
+  # - path: src/app/services/project_service.py
+  #   function: _serialize
+  #   reason: Serialization helpers are legitimately duplicated across services.

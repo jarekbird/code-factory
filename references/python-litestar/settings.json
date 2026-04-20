@@ -1,0 +1,59 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/check-imports.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'FILE_PATH=$(echo \"$0\" | jq -r \".tool_input.file_path // empty\"); if [[ \"$FILE_PATH\" == *.py ]]; then .venv/bin/ruff format --quiet \"$FILE_PATH\" 2>/dev/null; .venv/bin/ruff check --fix --quiet \"$FILE_PATH\" 2>/dev/null; fi; exit 0'",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'FILE_PATH=$(echo \"$0\" | jq -r \".tool_input.file_path // empty\"); if [[ \"$FILE_PATH\" == *.py ]] && [[ \"$FILE_PATH\" == *src/app/* ]]; then .venv/bin/python .claude/hooks/code_embeddings.py embed \"$FILE_PATH\" > /dev/null 2>&1 & fi; exit 0'",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "agent",
+            "prompt": "Invoke the complexity-check skill at .claude/skills/complexity-check/SKILL.md. Review the Python code changed this turn (use git diff HEAD) for algorithmic complexity concerns, respecting .claude/whitelist.yaml. Output the JSON decision per the skill's format.",
+            "timeout": 60
+          },
+          {
+            "type": "agent",
+            "prompt": "Invoke the srp-check skill at .claude/skills/srp-check/SKILL.md. Review the Python code changed this turn for SRP violations, respecting .claude/whitelist.yaml. Output the JSON decision per the skill's format.",
+            "timeout": 45
+          },
+          {
+            "type": "agent",
+            "prompt": "Invoke the dry-check skill at .claude/skills/dry-check/SKILL.md. Re-embed changed Python files and query for semantic duplicates. Respect .claude/whitelist.yaml. Output the JSON decision per the skill's format.",
+            "timeout": 60
+          },
+          {
+            "type": "agent",
+            "prompt": "Read the engineer skill at .claude/skills/engineer/SKILL.md, the settings at .claude/settings.json, and the code factory skills in .claude/skills/. Compare against the current code structure in src/app/. Flag if: 1) Skills or hooks are stale due to code changes (new pipeline steps, layers, conventions). 2) There's an opportunity to improve factory infrastructure — new templates, skills, or hooks that would help. Respond with {\"decision\": \"block\", \"reason\": \"Suggested updates: ...\"} for either case. Respond {\"decision\": \"approve\"} only if everything is current AND no useful additions are apparent.",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}
