@@ -64,5 +64,14 @@ List the sub-folders or packages within each layer and what they contain.
 - Directive: use `/research` for unfamiliar patterns
 - List of reference repos or internal docs to consult (with "don't copy blindly" caveat)
 
-### 12. DO NOT list
-A short list of forbidden patterns specific to this project's architecture.
+### 12. Scripts vs Skills
+Include a rule that ad-hoc wrapper scripts around the API are forbidden. If a
+task would benefit from driving multiple API calls in sequence (testing,
+debugging, batch operations), propose a Claude Code skill instead and ask the
+user before building it. Skills are discoverable, composable, and version-
+controlled; throwaway scripts get rewritten every time. One-shot shell
+commands are fine; *sequences* should become skills.
+
+### 13. DO NOT list
+A short list of forbidden patterns specific to this project's architecture,
+including "no ad-hoc API wrapper scripts — propose a skill instead".
